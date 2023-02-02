@@ -111,6 +111,11 @@ void done_behavior_pong(struct Pong* pong, ALLEGRO_KEYBOARD_STATE* state)
 
 void handle_input_pong(struct Pong* pong, ALLEGRO_KEYBOARD_STATE* state)
 {
+    if (al_key_down(state, ALLEGRO_KEY_ESCAPE))
+    {
+        init_pong(pong, pong->sounds);
+    }
+
     switch (pong->state)
     {
     case START:
