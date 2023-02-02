@@ -65,6 +65,19 @@ int main()
         if (event.type == ALLEGRO_EVENT_TIMER)
         {
             redraw = true;
+            if (pong.game_mode == PLAYER_VS_CPU)
+            {
+                handle_cpu_movement(&pong, &pong.player2);
+            }
+            else if (pong.game_mode == CPU_VS_PLAYER)
+            {
+                handle_cpu_movement(&pong, &pong.player1);
+            }
+            else if (pong.game_mode == CPU_VS_CPU)
+            {
+                handle_cpu_movement(&pong, &pong.player1);
+                handle_cpu_movement(&pong, &pong.player2);
+            }
         }
         else if (event.type == ALLEGRO_EVENT_DISPLAY_CLOSE)
         {

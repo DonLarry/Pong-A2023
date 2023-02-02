@@ -49,6 +49,22 @@ void handle_player_movement(struct Paddle* player, ALLEGRO_KEYBOARD_STATE* state
     }
 }
 
+void handle_cpu_movement(struct Pong *pong, struct Paddle *player)
+{
+    if (pong->ball.y > player->y)
+    {
+        player->vy = PADDLE_SPEED;
+    }
+    else if (pong->ball.y < player->y)
+    {
+        player->vy = -PADDLE_SPEED;
+    }
+    else
+    {
+        player->vy = 0;
+    }
+}
+
 void start_behavior_pong(struct Pong* pong, ALLEGRO_KEYBOARD_STATE* state)
 {
     if (al_key_down(state, ALLEGRO_KEY_ENTER))
