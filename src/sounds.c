@@ -10,13 +10,14 @@
 
 #include <assert.h>
 
+#include "settings.h"
 #include "sounds.h"
 
 void create_sounds(struct Sounds* sounds)
 {
-    sounds->paddle_hit = al_load_sample("sounds/paddle_hit.wav");
-    sounds->wall_hit = al_load_sample("sounds/wall_hit.wav");
-    sounds->score = al_load_sample("sounds/score.wav");
+    sounds->paddle_hit = al_load_sample(SOUNDS_FOLDER "/paddle_hit.wav");
+    sounds->wall_hit = al_load_sample(SOUNDS_FOLDER "/wall_hit.wav");
+    sounds->score = al_load_sample(SOUNDS_FOLDER "/score.wav");
     al_reserve_samples(3);
 
     assert(sounds->paddle_hit != NULL);
