@@ -31,6 +31,22 @@ void init_pong(struct Pong* pong, struct Sounds* sounds)
     srand(time(NULL));
 }
 
+void handle_player_movement(struct Paddle* player, ALLEGRO_KEYBOARD_STATE* state, const int down_key, const int up_key)
+{
+    if (al_key_down(state, down_key))
+    {
+        player->vy = PADDLE_SPEED;
+    }
+    else if (al_key_down(state, up_key))
+    {
+        player->vy = -PADDLE_SPEED;
+    }
+    else
+    {
+        player->vy = 0;
+    }
+}
+
 void start_behavior_pong(struct Pong* pong, ALLEGRO_KEYBOARD_STATE* state)
 {
     if (al_key_down(state, ALLEGRO_KEY_ENTER))
@@ -59,31 +75,8 @@ void serve_behavior_pong(struct Pong* pong, ALLEGRO_KEYBOARD_STATE* state)
 
 void play_behavior_pong(struct Pong* pong, ALLEGRO_KEYBOARD_STATE* state)
 {
-    if (al_key_down(state, ALLEGRO_KEY_S))
-    {
-        pong->player1.vy = PADDLE_SPEED;
-    }
-    else if (al_key_down(state, ALLEGRO_KEY_W))
-    {
-        pong->player1.vy = -PADDLE_SPEED;
-    }
-    else
-    {
-        pong->player1.vy = 0;
-    }
-
-    if (al_key_down(state, ALLEGRO_KEY_DOWN))
-    {
-        pong->player2.vy = PADDLE_SPEED;
-    }
-    else if (al_key_down(state, ALLEGRO_KEY_UP))
-    {
-        pong->player2.vy = -PADDLE_SPEED;
-    }
-    else
-    {
-        pong->player2.vy = 0;
-    }
+    handle_player_movement(&pong->player1, state, ALLEGRO_KEY_S, ALLEGRO_KEY_W);
+    handle_player_movement(&pong->player2, state, ALLEGRO_KEY_DOWN, ALLEGRO_KEY_UP);
 }
 
 void done_behavior_pong(struct Pong* pong, ALLEGRO_KEYBOARD_STATE* state)
