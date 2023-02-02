@@ -79,6 +79,11 @@ int main()
             {
                 handle_cpu_movement(&pong, &pong.player1);
                 handle_cpu_movement(&pong, &pong.player2);
+
+                if (pong.state == SERVE)
+                {
+                    serve(&pong);
+                }
             }
         }
         else if (event.type == ALLEGRO_EVENT_DISPLAY_CLOSE)

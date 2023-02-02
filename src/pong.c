@@ -65,6 +65,20 @@ void handle_cpu_movement(struct Pong *pong, struct Paddle *player)
     }
 }
 
+void serve(struct Pong *pong)
+{
+    pong->state = PLAY;
+
+    pong->ball.vx = rand() % 60 + 140;
+
+    if (pong->serving_player == 2)
+    {
+        pong->ball.vx *= -1;
+    }
+
+    pong->ball.vy = rand() % 100 - 50;
+}
+
 void start_behavior_pong(struct Pong* pong, ALLEGRO_KEYBOARD_STATE* state)
 {
     if (al_key_down(state, ALLEGRO_KEY_ENTER))
@@ -112,16 +126,7 @@ void serve_behavior_pong(struct Pong* pong, ALLEGRO_KEYBOARD_STATE* state)
 {
     if (al_key_down(state, ALLEGRO_KEY_ENTER))
     {
-        pong->state = PLAY;
-
-        pong->ball.vx = rand() % 60 + 140;
-
-        if (pong->serving_player == 2)
-        {
-            pong->ball.vx *= -1;
-        }
-
-        pong->ball.vy = rand() % 100 - 50;
+        serve(pong);
     }
 }
 
@@ -322,7 +327,7 @@ void render_pong(struct Pong* pong, struct Fonts* fonts)
         al_draw_text(f, *colors[3], TABLE_WIDTH / 2, TABLE_HEIGHT / 4 + TABLE_HEIGHT/12*5, ALLEGRO_ALIGN_CENTER, "CPU VS CPU");
         al_draw_text(f, *colors[4], TABLE_WIDTH / 2, TABLE_HEIGHT / 4 + TABLE_HEIGHT/12*6, ALLEGRO_ALIGN_CENTER, "Exit");
     }
-    else if (pong->state == SERVE)
+    else if (pong->state == SERVE && pong->game_mode != CPU_VS_CPU)
     {
         al_draw_text(fonts->large_font, al_map_rgb(255, 255, 255), TABLE_WIDTH / 2, TABLE_HEIGHT / 2, ALLEGRO_ALIGN_CENTER, "Press enter to serve");
     }

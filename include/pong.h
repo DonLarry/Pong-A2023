@@ -54,6 +54,8 @@ void init_pong(struct Pong* pong, struct Sounds* sounds);
 void handle_player_movement(struct Paddle* player, ALLEGRO_KEYBOARD_STATE* state, const int down_key, const int up_key);
 void handle_cpu_movement(struct Pong* pong, struct Paddle* player);
 
+void serve(struct Pong* pong);
+
 void start_behavior_pong(struct Pong* pong, ALLEGRO_KEYBOARD_STATE* state);
 void serve_behavior_pong(struct Pong* pong, ALLEGRO_KEYBOARD_STATE* state);
 void play_behavior_pong(struct Pong* pong, ALLEGRO_KEYBOARD_STATE* state);
