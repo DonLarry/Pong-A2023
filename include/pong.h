@@ -44,6 +44,7 @@ struct Pong
     int winning_player;
 
     int menu_selection;
+    int exit;
 
     struct Sounds* sounds;
 };

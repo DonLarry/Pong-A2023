@@ -31,7 +31,7 @@
 #define MID_LINE_WIDTH 2
 #define FPS 60.0
 #define MAX_POINTS 5
-#define MENU_OPTIONS 4
+#define MENU_OPTIONS 5
 #define ASSETS_FOLDER "assets"
 #define FONTS_FOLDER ASSETS_FOLDER "/fonts"
 #define SOUNDS_FOLDER ASSETS_FOLDER "/sounds"

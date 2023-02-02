@@ -28,6 +28,7 @@ void init_pong(struct Pong* pong, struct Sounds* sounds)
     pong->serving_player = 0;
     pong->winning_player = 0;
     pong->menu_selection = 0;
+    pong->exit = 0;
     pong->sounds = sounds;
     srand(time(NULL));
 }
@@ -68,6 +69,9 @@ void start_behavior_pong(struct Pong* pong, ALLEGRO_KEYBOARD_STATE* state)
         case 3:
             pong->game_mode = CPU_VS_CPU;
             break;
+        case 4:
+            pong->exit = 1;
+            return;
         default:
             // Not expected
             pong->state = START;
@@ -78,7 +82,7 @@ void start_behavior_pong(struct Pong* pong, ALLEGRO_KEYBOARD_STATE* state)
     }
     else if (al_key_down(state, ALLEGRO_KEY_UP) || al_key_down(state, ALLEGRO_KEY_W))
     {
-        pong->menu_selection = (pong->menu_selection - 1 + 4) % MENU_OPTIONS;
+        pong->menu_selection = (pong->menu_selection - 1 + MENU_OPTIONS) % MENU_OPTIONS;
         al_play_sample(pong->sounds->paddle_hit, /* gain */ 1.0, /* center */ 0.0, /* speed */ 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
     }
     else if (al_key_down(state, ALLEGRO_KEY_DOWN) || al_key_down(state, ALLEGRO_KEY_S))
@@ -292,13 +296,14 @@ void render_pong(struct Pong* pong, struct Fonts* fonts)
         ALLEGRO_FONT* f = fonts->large_font;
         ALLEGRO_COLOR white = al_map_rgb(255, 255, 255);
         ALLEGRO_COLOR selection_color = al_map_rgb(255, 255, 0);
-        ALLEGRO_COLOR* colors[4] = {&white, &white, &white, &white};
+        ALLEGRO_COLOR* colors[5] = {&white, &white, &white, &white, &white};
         colors[pong->menu_selection] = &selection_color;
         al_draw_text(f, white, TABLE_WIDTH / 2, TABLE_HEIGHT / 4, ALLEGRO_ALIGN_CENTER, "PONG!");
         al_draw_text(f, *colors[0], TABLE_WIDTH / 2, TABLE_HEIGHT / 4 + TABLE_HEIGHT/12*2, ALLEGRO_ALIGN_CENTER, "Player VS Player");
         al_draw_text(f, *colors[1], TABLE_WIDTH / 2, TABLE_HEIGHT / 4 + TABLE_HEIGHT/12*3, ALLEGRO_ALIGN_CENTER, "Player VS CPU");
         al_draw_text(f, *colors[2], TABLE_WIDTH / 2, TABLE_HEIGHT / 4 + TABLE_HEIGHT/12*4, ALLEGRO_ALIGN_CENTER, "CPU VS Player");
         al_draw_text(f, *colors[3], TABLE_WIDTH / 2, TABLE_HEIGHT / 4 + TABLE_HEIGHT/12*5, ALLEGRO_ALIGN_CENTER, "CPU VS CPU");
+        al_draw_text(f, *colors[4], TABLE_WIDTH / 2, TABLE_HEIGHT / 4 + TABLE_HEIGHT/12*6, ALLEGRO_ALIGN_CENTER, "Exit");
     }
     else if (pong->state == SERVE)
     {

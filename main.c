@@ -77,6 +77,11 @@ int main()
             handle_input_pong(&pong, &keyboard_state);
         }
 
+        if (pong.exit)
+        {
+            break;
+        }
+
         if (redraw && al_is_event_queue_empty(queue))
         {
             float current_frame_time = al_get_time();
@@ -104,6 +109,9 @@ int main()
             last_frame_time = current_frame_time;
         }
     }
+
+    // Plus 1 second because sound doesn't starts playing instantly.
+    al_rest(1 + al_get_sample_length(sounds.wall_hit) / al_get_sample_frequency(sounds.wall_hit));
 
     destroy_sounds(&sounds);
     destroy_fonts(&fonts);
