@@ -151,6 +151,7 @@ void handle_input_pong(struct Pong* pong, ALLEGRO_KEYBOARD_STATE* state)
 {
     if (al_key_down(state, ALLEGRO_KEY_ESCAPE))
     {
+        al_play_sample(pong->sounds->wall_hit, /* gain */ 1.0, /* center */ 0.0, /* speed */ 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
         init_pong(pong, pong->sounds);
     }
 
