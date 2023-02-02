@@ -1,28 +1,29 @@
-CC = clang
+INC_DIR = include
+SRC_DIR = src
+BIN_DIR = bin
+OBJ_DIR = obj
 
-LIBS = -lallegro -lallegro_font -lallegro_primitives -lallegro_font -lallegro_ttf -lallegro_audio -lallegro_acodec hitbox.o fonts.o sounds.o paddle.o ball.o pong.o
+EXE = $(BIN_DIR)/main
+SRC = $(wildcard $(SRC_DIR)/*.c)
+OBJ = $(SRC:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o)
 
-main: paddle.o ball.o pong.o fonts.o hitbox.o sounds.o settings.h main.c
-	$(CC) main.c -o main $(LIBS)
+CC       = clang
+CPPFLAGS = -I$(INC_DIR) -I.
+CFLAGS   = -Wall
+LIBS     = -lallegro -lallegro_font -lallegro_primitives -lallegro_font -lallegro_ttf -lallegro_audio -lallegro_acodec
 
-hitbox.o: hitbox.h hitbox.c
-	$(CC) -c hitbox.c
+all: $(EXE)
 
-fonts.o: fonts.h fonts.c
-	$(CC) -c fonts.c
+.PHONY: all
 
-sounds.o: sounds.h sounds.c
-	$(CC) -c sounds.c
+$(EXE): $(OBJ) | $(BIN_DIR)
+	$(CC) $(CPPFLAGS) $(CFLAGS) main.c $^ $(LIBS) -o $@
 
-paddle.o: paddle.h paddle.c
-	$(CC) -c paddle.c
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c | $(OBJ_DIR)
+	$(CC) $(CPPFLAGS) $(CFLAGS) -c $< -o $@
 
-ball.o: ball.h ball.c
-	$(CC) -c ball.c
+$(BIN_DIR) $(OBJ_DIR):
+	mkdir -p $@
 
-pong.o: pong.h pong.c
-	$(CC) -c pong.c
-
-.PHONY:
 clean:
-	$(RM) *.o main
+	$(RM) -r $(BIN_DIR) $(OBJ_DIR)
