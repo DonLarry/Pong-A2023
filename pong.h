@@ -39,6 +39,11 @@ struct Pong
 
 void init_pong(struct Pong* pong, struct Sounds* sounds);
 
+void start_behavior_pong(struct Pong* pong, ALLEGRO_KEYBOARD_STATE* state);
+void serve_behavior_pong(struct Pong* pong, ALLEGRO_KEYBOARD_STATE* state);
+void play_behavior_pong(struct Pong* pong, ALLEGRO_KEYBOARD_STATE* state);
+void done_behavior_pong(struct Pong* pong, ALLEGRO_KEYBOARD_STATE* state);
+
 void handle_input_pong(struct Pong* pong, ALLEGRO_KEYBOARD_STATE* state);
 
 void update_pong(struct Pong* pong, double dt);

@@ -31,79 +31,100 @@ void init_pong(struct Pong* pong, struct Sounds* sounds)
     srand(time(NULL));
 }
 
-void handle_input_pong(struct Pong* pong, ALLEGRO_KEYBOARD_STATE* state)
+void start_behavior_pong(struct Pong* pong, ALLEGRO_KEYBOARD_STATE* state)
 {
-    if (pong->state == START)
+    if (al_key_down(state, ALLEGRO_KEY_ENTER))
     {
-        if (al_key_down(state, ALLEGRO_KEY_ENTER))
-        {
-            pong->state = SERVE;
-            pong->serving_player = rand() % 2 + 1;
-        }
+        pong->state = SERVE;
+        pong->serving_player = rand() % 2 + 1;
     }
-    else if (pong->state == SERVE)
+}
+
+void serve_behavior_pong(struct Pong* pong, ALLEGRO_KEYBOARD_STATE* state)
+{
+    if (al_key_down(state, ALLEGRO_KEY_ENTER))
     {
-        if (al_key_down(state, ALLEGRO_KEY_ENTER))
+        pong->state = PLAY;
+
+        pong->ball.vx = rand() % 60 + 140;
+
+        if (pong->serving_player == 2)
         {
-            pong->state = PLAY;
-
-            pong->ball.vx = rand() % 60 + 140;
-
-            if (pong->serving_player == 2)
-            {
-                pong->ball.vx *= -1;
-            }
-
-            pong->ball.vy = rand() % 100 - 50;
+            pong->ball.vx *= -1;
         }
+
+        pong->ball.vy = rand() % 100 - 50;
     }
-    else if (pong->state == PLAY)
-    {
-        if (al_key_down(state, ALLEGRO_KEY_S))
-        {
-            pong->player1.vy = PADDLE_SPEED;
-        }
-        else if (al_key_down(state, ALLEGRO_KEY_W))
-        {
-            pong->player1.vy = -PADDLE_SPEED;
-        }
-        else
-        {
-            pong->player1.vy = 0;
-        }
+}
 
-        if (al_key_down(state, ALLEGRO_KEY_DOWN))
-        {
-            pong->player2.vy = PADDLE_SPEED;
-        }
-        else if (al_key_down(state, ALLEGRO_KEY_UP))
-        {
-            pong->player2.vy = -PADDLE_SPEED;
-        }
-        else
-        {
-            pong->player2.vy = 0;
-        }
+void play_behavior_pong(struct Pong* pong, ALLEGRO_KEYBOARD_STATE* state)
+{
+    if (al_key_down(state, ALLEGRO_KEY_S))
+    {
+        pong->player1.vy = PADDLE_SPEED;
+    }
+    else if (al_key_down(state, ALLEGRO_KEY_W))
+    {
+        pong->player1.vy = -PADDLE_SPEED;
     }
     else
     {
-        if (al_key_down(state, ALLEGRO_KEY_ENTER))
+        pong->player1.vy = 0;
+    }
+
+    if (al_key_down(state, ALLEGRO_KEY_DOWN))
+    {
+        pong->player2.vy = PADDLE_SPEED;
+    }
+    else if (al_key_down(state, ALLEGRO_KEY_UP))
+    {
+        pong->player2.vy = -PADDLE_SPEED;
+    }
+    else
+    {
+        pong->player2.vy = 0;
+    }
+}
+
+void done_behavior_pong(struct Pong* pong, ALLEGRO_KEYBOARD_STATE* state)
+{
+    if (al_key_down(state, ALLEGRO_KEY_ENTER))
+    {
+        pong->state = SERVE;
+        init_ball(&pong->ball, TABLE_WIDTH / 2 - BALL_SIZE / 2, TABLE_HEIGHT / 2 - BALL_SIZE / 2, BALL_SIZE);
+
+        pong->player1_score = 0;
+        pong->player2_score = 0;
+
+        if (pong->winning_player == 1)
         {
-            pong->state = SERVE;
-            init_ball(&pong->ball, TABLE_WIDTH / 2 - BALL_SIZE / 2, TABLE_HEIGHT / 2 - BALL_SIZE / 2, BALL_SIZE);
-
-            pong->player1_score = 0;
-            pong->player2_score = 0;
-
-            if (pong->winning_player == 1)
-            {
-                pong->serving_player = 2;
-            }
-            else
-            {
-                pong->serving_player = 1;
-            }
+            pong->serving_player = 2;
         }
+        else
+        {
+            pong->serving_player = 1;
+        }
+    }
+}
+
+void handle_input_pong(struct Pong* pong, ALLEGRO_KEYBOARD_STATE* state)
+{
+    switch (pong->state)
+    {
+    case START:
+        start_behavior_pong(pong, state);
+        break;
+    case SERVE:
+        serve_behavior_pong(pong, state);
+        break;
+    case PLAY:
+        play_behavior_pong(pong, state);
+        break;
+    case DONE:
+        done_behavior_pong(pong, state);
+        break;
+    default: // Not expected state value
+        done_behavior_pong(pong, state);
     }
 }
 
