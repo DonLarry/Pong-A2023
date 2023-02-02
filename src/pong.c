@@ -52,16 +52,39 @@ void start_behavior_pong(struct Pong* pong, ALLEGRO_KEYBOARD_STATE* state)
 {
     if (al_key_down(state, ALLEGRO_KEY_ENTER))
     {
+        al_play_sample(pong->sounds->wall_hit, /* gain */ 1.0, /* center */ 0.0, /* speed */ 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
         pong->state = SERVE;
+        switch (pong->menu_selection)
+        {
+        case 0:
+            pong->game_mode = PLAYER_VS_PLAYER;
+            break;
+        case 1:
+            pong->game_mode = PLAYER_VS_CPU;
+            break;
+        case 2:
+            pong->game_mode = CPU_VS_PLAYER;
+            break;
+        case 3:
+            pong->game_mode = CPU_VS_CPU;
+            break;
+        default:
+            // Not expected
+            pong->state = START;
+            break;
+        }
+        pong->menu_selection = 0;
         pong->serving_player = rand() % 2 + 1;
     }
     else if (al_key_down(state, ALLEGRO_KEY_UP) || al_key_down(state, ALLEGRO_KEY_W))
     {
         pong->menu_selection = (pong->menu_selection - 1 + 4) % MENU_OPTIONS;
+        al_play_sample(pong->sounds->paddle_hit, /* gain */ 1.0, /* center */ 0.0, /* speed */ 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
     }
     else if (al_key_down(state, ALLEGRO_KEY_DOWN) || al_key_down(state, ALLEGRO_KEY_S))
     {
         pong->menu_selection = (pong->menu_selection + 1) % MENU_OPTIONS;
+        al_play_sample(pong->sounds->paddle_hit, /* gain */ 1.0, /* center */ 0.0, /* speed */ 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
     }
 }
 
@@ -84,8 +107,19 @@ void serve_behavior_pong(struct Pong* pong, ALLEGRO_KEYBOARD_STATE* state)
 
 void play_behavior_pong(struct Pong* pong, ALLEGRO_KEYBOARD_STATE* state)
 {
-    handle_player_movement(&pong->player1, state, ALLEGRO_KEY_S, ALLEGRO_KEY_W);
-    handle_player_movement(&pong->player2, state, ALLEGRO_KEY_DOWN, ALLEGRO_KEY_UP);
+    if (pong->game_mode == PLAYER_VS_PLAYER)
+    {
+        handle_player_movement(&pong->player1, state, ALLEGRO_KEY_S, ALLEGRO_KEY_W);
+        handle_player_movement(&pong->player2, state, ALLEGRO_KEY_DOWN, ALLEGRO_KEY_UP);
+    }
+    else if (pong->game_mode == PLAYER_VS_CPU)
+    {
+        handle_player_movement(&pong->player1, state, ALLEGRO_KEY_S, ALLEGRO_KEY_W);
+    }
+    else if (pong->game_mode == CPU_VS_PLAYER)
+    {
+        handle_player_movement(&pong->player2, state, ALLEGRO_KEY_DOWN, ALLEGRO_KEY_UP);
+    }
 }
 
 void done_behavior_pong(struct Pong* pong, ALLEGRO_KEYBOARD_STATE* state)
