@@ -27,6 +27,7 @@ void init_pong(struct Pong* pong, struct Sounds* sounds)
     pong->player2_score = 0;
     pong->serving_player = 0;
     pong->winning_player = 0;
+    pong->menu_selection = 0;
     pong->sounds = sounds;
     srand(time(NULL));
 }
@@ -53,6 +54,14 @@ void start_behavior_pong(struct Pong* pong, ALLEGRO_KEYBOARD_STATE* state)
     {
         pong->state = SERVE;
         pong->serving_player = rand() % 2 + 1;
+    }
+    else if (al_key_down(state, ALLEGRO_KEY_UP) || al_key_down(state, ALLEGRO_KEY_W))
+    {
+        pong->menu_selection = (pong->menu_selection - 1 + 4) % MENU_OPTIONS;
+    }
+    else if (al_key_down(state, ALLEGRO_KEY_DOWN) || al_key_down(state, ALLEGRO_KEY_S))
+    {
+        pong->menu_selection = (pong->menu_selection + 1) % MENU_OPTIONS;
     }
 }
 
@@ -221,24 +230,36 @@ void update_pong(struct Pong* pong, double dt)
 
 void render_pong(struct Pong* pong, struct Fonts* fonts)
 {
-    al_draw_filled_rectangle(
-        TABLE_WIDTH / 2 - MID_LINE_WIDTH / 2, 0,
-        TABLE_WIDTH / 2 + MID_LINE_WIDTH / 2, TABLE_HEIGHT,
-        al_map_rgb(255, 255, 255)
-    );
-    render_paddle(pong->player1);
-    render_paddle(pong->player2);
-    render_ball(pong->ball);
+    if (pong->state != START)
+    {
+        al_draw_filled_rectangle(
+            TABLE_WIDTH / 2 - MID_LINE_WIDTH / 2, 0,
+            TABLE_WIDTH / 2 + MID_LINE_WIDTH / 2, TABLE_HEIGHT,
+            al_map_rgb(255, 255, 255)
+        );
+        render_paddle(pong->player1);
+        render_paddle(pong->player2);
+        render_ball(pong->ball);
 
-    char score[3];
-    sprintf(score, "%d", pong->player1_score);
-    al_draw_text(fonts->score_font, al_map_rgb(255, 255, 255), TABLE_WIDTH / 2 - 50, TABLE_HEIGHT / 6, ALLEGRO_ALIGN_CENTER, score);
-    sprintf(score, "%d", pong->player2_score);
-    al_draw_text(fonts->score_font, al_map_rgb(255, 255, 255), TABLE_WIDTH / 2 + 50, TABLE_HEIGHT / 6, ALLEGRO_ALIGN_CENTER, score);
+        char score[3];
+        sprintf(score, "%d", pong->player1_score);
+        al_draw_text(fonts->score_font, al_map_rgb(255, 255, 255), TABLE_WIDTH / 2 - 50, TABLE_HEIGHT / 6, ALLEGRO_ALIGN_CENTER, score);
+        sprintf(score, "%d", pong->player2_score);
+        al_draw_text(fonts->score_font, al_map_rgb(255, 255, 255), TABLE_WIDTH / 2 + 50, TABLE_HEIGHT / 6, ALLEGRO_ALIGN_CENTER, score);
+    }
 
     if (pong->state == START)
     {
-        al_draw_text(fonts->large_font, al_map_rgb(255, 255, 255), TABLE_WIDTH / 2, TABLE_HEIGHT / 2, ALLEGRO_ALIGN_CENTER, "Press enter to start");
+        ALLEGRO_FONT* f = fonts->large_font;
+        ALLEGRO_COLOR white = al_map_rgb(255, 255, 255);
+        ALLEGRO_COLOR selection_color = al_map_rgb(255, 255, 0);
+        ALLEGRO_COLOR* colors[4] = {&white, &white, &white, &white};
+        colors[pong->menu_selection] = &selection_color;
+        al_draw_text(f, white, TABLE_WIDTH / 2, TABLE_HEIGHT / 4, ALLEGRO_ALIGN_CENTER, "PONG!");
+        al_draw_text(f, *colors[0], TABLE_WIDTH / 2, TABLE_HEIGHT / 4 + TABLE_HEIGHT/12*2, ALLEGRO_ALIGN_CENTER, "Player VS Player");
+        al_draw_text(f, *colors[1], TABLE_WIDTH / 2, TABLE_HEIGHT / 4 + TABLE_HEIGHT/12*3, ALLEGRO_ALIGN_CENTER, "Player VS CPU");
+        al_draw_text(f, *colors[2], TABLE_WIDTH / 2, TABLE_HEIGHT / 4 + TABLE_HEIGHT/12*4, ALLEGRO_ALIGN_CENTER, "CPU VS Player");
+        al_draw_text(f, *colors[3], TABLE_WIDTH / 2, TABLE_HEIGHT / 4 + TABLE_HEIGHT/12*5, ALLEGRO_ALIGN_CENTER, "CPU VS CPU");
     }
     else if (pong->state == SERVE)
     {
