@@ -15,9 +15,13 @@
 
 struct Sounds
 {
+    ALLEGRO_SAMPLE* background;
     ALLEGRO_SAMPLE* paddle_hit;
     ALLEGRO_SAMPLE* wall_hit;
     ALLEGRO_SAMPLE* score;
+    ALLEGRO_SAMPLE* menu_move;
+    ALLEGRO_SAMPLE* menu_select;
+    ALLEGRO_SAMPLE* esc_key_press;
 };
 
 void create_sounds(struct Sounds* sounds);

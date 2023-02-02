@@ -69,7 +69,7 @@ void start_behavior_pong(struct Pong* pong, ALLEGRO_KEYBOARD_STATE* state)
 {
     if (al_key_down(state, ALLEGRO_KEY_ENTER))
     {
-        al_play_sample(pong->sounds->wall_hit, /* gain */ 1.0, /* center */ 0.0, /* speed */ 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
+        al_play_sample(pong->sounds->menu_select, 1.0, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
         pong->state = SERVE;
         switch (pong->menu_selection)
         {
@@ -99,12 +99,12 @@ void start_behavior_pong(struct Pong* pong, ALLEGRO_KEYBOARD_STATE* state)
     else if (al_key_down(state, ALLEGRO_KEY_UP) || al_key_down(state, ALLEGRO_KEY_W))
     {
         pong->menu_selection = (pong->menu_selection - 1 + MENU_OPTIONS) % MENU_OPTIONS;
-        al_play_sample(pong->sounds->paddle_hit, /* gain */ 1.0, /* center */ 0.0, /* speed */ 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
+        al_play_sample(pong->sounds->menu_move, 1.0, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
     }
     else if (al_key_down(state, ALLEGRO_KEY_DOWN) || al_key_down(state, ALLEGRO_KEY_S))
     {
         pong->menu_selection = (pong->menu_selection + 1) % MENU_OPTIONS;
-        al_play_sample(pong->sounds->paddle_hit, /* gain */ 1.0, /* center */ 0.0, /* speed */ 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
+        al_play_sample(pong->sounds->menu_move, 1.0, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
     }
 }
 
@@ -167,7 +167,7 @@ void handle_input_pong(struct Pong* pong, ALLEGRO_KEYBOARD_STATE* state)
 {
     if (al_key_down(state, ALLEGRO_KEY_ESCAPE))
     {
-        al_play_sample(pong->sounds->wall_hit, /* gain */ 1.0, /* center */ 0.0, /* speed */ 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
+        al_play_sample(pong->sounds->esc_key_press, 1.0, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
         init_pong(pong, pong->sounds);
     }
 
@@ -209,7 +209,7 @@ void update_pong(struct Pong* pong, double dt)
 
         if (ball_hitbox.x1 > TABLE_WIDTH)
         {
-            al_play_sample(pong->sounds->score, /* gain */ 1.0, /* center */ 1.0, /* speed */ 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
+            al_play_sample(pong->sounds->score, 1.0, 1.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
             ++pong->player1_score;
             pong->serving_player = 2;
 
@@ -226,7 +226,7 @@ void update_pong(struct Pong* pong, double dt)
         }
         else if (ball_hitbox.x2 < 0)
         {
-            al_play_sample(pong->sounds->score, /* gain */ 1.0, /* center */ -1.0, /* speed */ 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
+            al_play_sample(pong->sounds->score, 1.0, -1.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
             ++pong->player2_score;
             pong->serving_player = 1;
 
@@ -244,20 +244,20 @@ void update_pong(struct Pong* pong, double dt)
 
         if (ball_hitbox.y1 <= 0)
         {
-            al_play_sample(pong->sounds->wall_hit, /* gain */ 1.0, /* center */ 0.0, /* speed */ 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
+            al_play_sample(pong->sounds->wall_hit, 1.0, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
             pong->ball.y = 0;
             pong->ball.vy *= -1;
         }
         else if (ball_hitbox.y2 >= TABLE_HEIGHT)
         {
-            al_play_sample(pong->sounds->wall_hit, /* gain */ 1.0, /* center */ 0.0, /* speed */ 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
+            al_play_sample(pong->sounds->wall_hit, 1.0, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
             pong->ball.y = TABLE_HEIGHT - pong->ball.height;
             pong->ball.vy *= -1;
         }
         
         if (collides(ball_hitbox, player1_hitbox))
         {
-            al_play_sample(pong->sounds->paddle_hit, /* gain */ 1.0, /* center */ -1.0, /* speed */ 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
+            al_play_sample(pong->sounds->paddle_hit, 1.0, -1.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
             pong->ball.x = player1_hitbox.x2;
             pong->ball.vx *= -1.03;
 
@@ -272,7 +272,7 @@ void update_pong(struct Pong* pong, double dt)
         }
         else if (collides(ball_hitbox, player2_hitbox))
         {
-            al_play_sample(pong->sounds->paddle_hit, /* gain */ 1.0, /* center */ 1.0, /* speed */ 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
+            al_play_sample(pong->sounds->paddle_hit, 1.0, 1.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
             pong->ball.x = player2_hitbox.x1 - pong->ball.width;
             pong->ball.vx *= -1.03;
 

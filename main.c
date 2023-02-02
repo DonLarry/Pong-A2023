@@ -56,6 +56,8 @@ int main()
     struct Pong pong;
     init_pong(&pong, &sounds);
 
+    al_play_sample(pong.sounds->background, 1.0, 0.0, 1.0, ALLEGRO_PLAYMODE_LOOP, NULL);
+
     float last_frame_time = al_get_time();
 
     while (true)
